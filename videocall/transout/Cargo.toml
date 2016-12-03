@@ -1,0 +1,8 @@
+[package]
+name = "snes-transinput-videophone"
+version = "0.1.0"
+authors = ["Ilari Liusvaara <ilariliusvaara@welho.com>"]
+description = "Translate input to form suitable for videophone"
+
+[dependencies]
+libc="0.2"

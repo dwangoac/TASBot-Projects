@@ -1,0 +1,26 @@
+Compile the c++ code:
+g++ -O3 -Wall main.cpp quantize.cpp -o process_image
+
+Generate palette.bin:
+./generate_255_palette.sh INPUT_IMAGE
+
+Resize the input image and format as bmp:
+./resize_to_bmp.sh INPUT_IMAGE RESIZED_IMAGE 112 104
+
+In both examples above, INPUT_IMAGE Can be any format
+
+
+Quantize the image:
+./process_image RESIZED_IMAGE ./palette.bin OUTPUT_IMAGE
+
+OUTPUT_IMAGE will be an 8-bit TrueColor BMP
+
+
+
+
+Example processing a directory of images:
+mkdir resized
+mkdir resized/out
+./generate_255_palette.sh INPUT_IMAGE
+for i in *.bmp; do ./resize_to_bmp.sh $i resized/$i 112 104; done
+for i in *.bmp; do ./process/process_image resized/$i ./palette.bin resized/out/$i; done
