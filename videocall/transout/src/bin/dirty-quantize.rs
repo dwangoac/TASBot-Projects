@@ -1,4 +1,4 @@
-use std::io::{stdin, stdout, stderr, Read, Write};
+use std::io::{stdin, stdout, Read, Write, ErrorKind as IoErrorKind};
 const LEVELS: [u8;6] = [0, 51, 102, 153, 204, 255];
 
 fn emit_palette()
@@ -12,15 +12,18 @@ fn emit_palette()
 		palette[3*i+4] = g;
 		palette[3*i+5] = b;
 	}
+	palette[765] = 255;
+	palette[766] = 255;
+	palette[767] = 255;
 	stdout().write_all(&palette).unwrap();
 }
 
-//Framedata is 112*104*4 bytes.
+//Framedata is 128*112*4 bytes.
 fn quantize_frame(framedata: &[u8])
 {
-	let mut out = [0; 112*104];
+	let mut out = [0; 128*112];
 	let mut idx = 0;
-	for i in 0..112*104 {
+	for i in 0..128*112 {
 		let r = framedata[idx+0] as u32;
 		let g = framedata[idx+1] as u32;
 		let b = framedata[idx+2] as u32;
@@ -36,10 +39,16 @@ fn quantize_frame(framedata: &[u8])
 
 fn main()
 {
-	let mut buf = [0;112*104*3];
+	let mut buf = [0;128*112*3];
 	emit_palette();
 	loop {
-		stdin().read_exact(&mut buf).unwrap();
+		match stdin().read_exact(&mut buf) {
+			Ok(_) => (),
+			Err(x) => {
+				if x.kind() == IoErrorKind::UnexpectedEof { return; }
+				panic!("Error reading: {}", x);
+			}
+		};
 		quantize_frame(&buf);
 	}
 }
