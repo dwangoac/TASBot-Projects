@@ -5,11 +5,11 @@
 
 
 // Size in tiles
-#define VSIZE_X 15
-#define VSIZE_Y 13
+#define VSIZE_X 16
+#define VSIZE_Y 14
 
 // Number of iframes per frame, including one command header
-#define SPEED 261
+#define SPEED 300
 // Number of iframes of data per frame
 #define DATA_IF (SPEED-1)
   
@@ -195,7 +195,7 @@ void bitplane_tile(uint8 **rows, uint8 *output)
 
 int main()
 {
-    uint8 video_frame[120*104*3];
+    uint8 video_frame[VSIZE_X * VSIZE_Y * 8 * 8 * 3];
     // Octree foo;
     // for (int i = 0; i < 120*104*3; i++)
     // {
@@ -230,12 +230,12 @@ int main()
     // trans_palette(palette, true);
 
     bool highmem = true;
-    uint8 quan_data[120*104];
+    uint8 quan_data[VSIZE_X * VSIZE_Y * 8 * 8];
     char temp;
     while (true)
     {
         Octree foo;
-        for (int i = 0; i < 120*104*3; i++)
+        for (int i = 0; i < VSIZE_X * VSIZE_Y * 8 * 8 * 3; i++)
         {
             if (!std::cin.get(temp))
             {
@@ -258,7 +258,7 @@ int main()
         }
         foo.make_palette_table(palette);
         
-        for (int i = 0; i < 120*104; i++)
+        for (int i = 0; i < VSIZE_X * VSIZE_Y * 8 * 8; i++)
         {
             quan_data[i] = foo.find_color(video_frame[i*3+0],video_frame[i*3+1],video_frame[i*3+2]);
         }
