@@ -178,7 +178,7 @@ int Octree::find_color(OctreeNode * cur_node, uint8 red, uint8 green, uint8 blue
         // If the child node we want is not there, find a child node that is close
         if (cur_node->child[child_index] == 0)
         {
-            for (int i = 1; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
                 /*
                 if (child_index + i < 8 && cur_node->child[child_index + i] != 0)
