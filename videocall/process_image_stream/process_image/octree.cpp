@@ -1,3 +1,4 @@
+#include <iostream>
 #include "octree.h"
 #include "data_sizes.h"
 
@@ -93,6 +94,7 @@ int OctreeNode::reduce()
             sumblue += child[i]->bluesum;
             npixels += child[i]->npixels;
             delete child[i];
+            child[i] = 0;
         }
     }
     is_leaf = true;
@@ -137,7 +139,6 @@ void Octree::make_palette_table(uint8 * output)
 {
     int index = 0;
     make_palette_table(output, &index, root);
-    
 }
 
 void Octree::make_palette_table(uint8 * output, int * index, OctreeNode * cur_node)
@@ -147,12 +148,77 @@ void Octree::make_palette_table(uint8 * output, int * index, OctreeNode * cur_no
         output[(*index) * 3 + 0] = (uint8)(cur_node->redsum / cur_node->npixels);
         output[(*index) * 3 + 1] = (uint8)(cur_node->greensum / cur_node->npixels);
         output[(*index) * 3 + 2] = (uint8)(cur_node->bluesum / cur_node->npixels);
+        cur_node->index = (*index);
         (*index)++;
     }
     else {
         for (i = 0; i < COLORBITS; i++) {
             if (cur_node->child[i]) {
                 make_palette_table(output, index, cur_node->child[i]);
+            }
+        }
+    }
+}
+
+int Octree::find_color(uint8 red, uint8 green, uint8 blue)
+{
+    find_color(root, red, green, blue, 0);
+}
+
+int Octree::find_color(OctreeNode * cur_node, uint8 red, uint8 green, uint8 blue, int depth)
+{
+    if (cur_node->is_leaf)
+    {
+        return cur_node->index;
+    }
+    else
+    {
+        int child_index = (((red >> (TREE_DEPTH-depth)) & 0x01) << 2) | (((green >> (TREE_DEPTH-depth)) & 0x01) << 1) | ((blue >> (TREE_DEPTH-depth)) & 0x01);
+        
+        // If the child node we want is not there, find a child node that is close
+        if (cur_node->child[child_index] == 0)
+        {
+            for (int i = 1; i < 8; i++)
+            {
+                /*
+                if (child_index + i < 8 && cur_node->child[child_index + i] != 0)
+                {
+                    child_index = child_index + i;
+                }
+                else if (child_index - i >= 0 && cur_node->child[child_index - i] != 0)
+                {
+                    child_index = child_index - i;
+                }
+                */
+                if (cur_node->child[i] != 0)
+                {
+                    child_index = i;
+                }
+            }
+        }
+        return find_color(cur_node->child[child_index], red, green, blue, depth+1);
+    }
+}
+
+void Octree::walk_tree()
+{
+    root->walk();
+}
+
+void OctreeNode::walk()
+{
+    if (is_leaf)
+    {
+        std::cout << "leaf\n";
+    }
+    else
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            if (child[i] != 0)
+            {
+                std::cout << i << "\n";
+                child[i]->walk();
             }
         }
     }

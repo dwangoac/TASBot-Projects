@@ -3,7 +3,7 @@
 
 #include "data_sizes.h"
 
-#define TREE_DEPTH 6
+#define TREE_DEPTH 7
 #define COLORBITS   8
 
 class OctreeNode
@@ -20,6 +20,7 @@ public:
   OctreeNode *nextnode;
   
   int reduce();
+  void walk();
 
 };
 
@@ -42,6 +43,11 @@ public:
   void reset();
   void make_palette_table(uint8 * output);
   void make_palette_table(uint8 * output, int * index, OctreeNode * cur_node);
+  int find_color(uint8 red, uint8 green, uint8 blue);
+  int find_color(OctreeNode * cur_node, uint8 red, uint8 green, uint8 blue, int depth);
+
+  
+  void walk_tree();
   
   int leaf_count;
   int deepest_leaf_level;

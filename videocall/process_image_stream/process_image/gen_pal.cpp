@@ -30,10 +30,7 @@ int main()
         foo.insert_color(color[0], color[1], color[2]);
     }
 
-    //cout << foo.leaf_count << "\n";
-    
     foo.reduce(256);
-   // cout << foo.leaf_count << "\n";
     
     uint8 palette[256*3];
     for (int i = 0; i < 256*3; i++)
