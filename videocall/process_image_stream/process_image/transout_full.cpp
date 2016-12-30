@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 
 #include "octree.h"
 #include "data_sizes.h"
@@ -7,6 +8,9 @@
 // Size in tiles
 #define VSIZE_X 16
 #define VSIZE_Y 14
+
+#define VFRAME_RGB_SIZE (VSIZE_X * VSIZE_Y * 8 * 8 * 3)
+#define VFRAME_SIZE (VSIZE_X * VSIZE_Y * 8 * 8)
 
 // Number of iframes per frame, including one command header
 #define SPEED 300
@@ -193,9 +197,21 @@ void bitplane_tile(uint8 **rows, uint8 *output)
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    uint8 video_frame[VSIZE_X * VSIZE_Y * 8 * 8 * 3];
+    if (argc < 2)
+    {
+        cout << "usage: " << argv[0] << " <palette interval>\n";
+    }
+    
+    int interval = atoi(argv[1]);
+    
+    if (interval < 1)
+    {
+        cout << "Invalid palette interval\n";
+    }
+  
+    uint8 video_frame[VFRAME_RGB_SIZE * interval];
     // Octree foo;
     // for (int i = 0; i < 120*104*3; i++)
     // {
@@ -230,22 +246,26 @@ int main()
     // trans_palette(palette, true);
 
     bool highmem = true;
-    uint8 quan_data[VSIZE_X * VSIZE_Y * 8 * 8];
+    uint8 quan_data[VFRAME_SIZE];
     char temp;
     while (true)
     {
         Octree foo;
-        for (int i = 0; i < VSIZE_X * VSIZE_Y * 8 * 8 * 3; i++)
+        for (int frame = 0; frame < interval; frame++)
         {
-            if (!std::cin.get(temp))
+            for (int i = 0; i < VFRAME_RGB_SIZE; i++)
             {
-                return 0;
-            }
-            video_frame[i] = temp;
-            
-            if (i % 3 == 2)
-            {
-                foo.insert_color(video_frame[i-2], video_frame[i-1], video_frame[i]);
+                if (!std::cin.get(temp))
+                {
+                    return 0;
+                }
+                video_frame[frame * VFRAME_RGB_SIZE + i] = temp;
+                
+                
+                if (i % 3 == 2)
+                {
+                    foo.insert_color(video_frame[frame * VFRAME_RGB_SIZE + i-2], video_frame[frame * VFRAME_RGB_SIZE + i-1], video_frame[frame * VFRAME_RGB_SIZE + i]);
+                }
             }
         }
         
@@ -258,13 +278,25 @@ int main()
         }
         foo.make_palette_table(palette);
         
-        for (int i = 0; i < VSIZE_X * VSIZE_Y * 8 * 8; i++)
+        for (int frame = 0; frame < interval; frame++)
         {
-            quan_data[i] = foo.find_color(video_frame[i*3+0],video_frame[i*3+1],video_frame[i*3+2]);
+            for (int i = 0; i < VFRAME_SIZE; i++)
+            {
+                quan_data[i] = foo.find_color(video_frame[frame * VFRAME_RGB_SIZE + i*3+0],video_frame[frame * VFRAME_RGB_SIZE + i*3+1],video_frame[frame * VFRAME_RGB_SIZE + i*3+2]);
+            }
+            
+            if (frame == 0)
+            {
+                trans_frame(quan_data, highmem, !highmem);
+                highmem = !highmem;
+                trans_palette(palette, highmem);
+            }
+            else
+            {
+                trans_frame(quan_data, highmem, highmem);
+                highmem = !highmem;
+            }
         }
-        trans_frame(quan_data, highmem, !highmem);
-        highmem = !highmem;
-        trans_palette(palette, highmem);
         
         
         /*
