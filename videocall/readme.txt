@@ -1,13 +1,6 @@
-To generate the video data, in transout/ do the following:
+To generate an r16m from a pre-recorded video, do the following:
 
-cargo build --release
-ffmpeg -y -i foo.mp4 -r 10 -vf scale=112:104 -f rawvideo -pix_fmt rgb24 /dev/stdout | ./target/release/dirty-quantize | ./target/release/snes-transinput-videophone > bar.dat
+./trans_prerecorded.sh <avi file> <palette interval>
+Palette interval is how often to generate and transmit a new palette in frames, minimum of 1.
 
-
-To run the video data, append it to a video payload setup movie:
-
-cat smw-vidphone-setup.r16m bar.dat > out.r16m
-or
-cat zelda-vidphone-setup.r16m bar.dat > out.r16m
-
-Then play the r16m as 16 bit y-cable.
+Output is LoZ_out.r16m
