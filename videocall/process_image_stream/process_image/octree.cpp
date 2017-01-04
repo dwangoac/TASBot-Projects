@@ -141,6 +141,12 @@ void Octree::make_palette_table(uint8 * output)
     make_palette_table(output, &index, root);
 }
 
+void Octree::make_palette_table(uint8 * output, int in_index)
+{
+    int index = in_index;
+    make_palette_table(output, &index, root);
+}
+
 void Octree::make_palette_table(uint8 * output, int * index, OctreeNode * cur_node)
 {
     int i;
