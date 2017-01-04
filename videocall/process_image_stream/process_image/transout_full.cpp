@@ -87,7 +87,11 @@ int main(int argc, char *argv[])
         {
             palette[i] = 0;
         }
-        foo.make_palette_table(&palette[3]);
+        foo.make_palette_table(palette, 1);
+        
+        palette[0*3+0] = 0;
+        palette[0*3+1] = 0;
+        palette[0*3+2] = 0;
         palette[255*3+0] = 255;
         palette[255*3+1] = 255;
         palette[255*3+2] = 255;

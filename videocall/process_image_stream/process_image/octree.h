@@ -42,6 +42,7 @@ public:
   void insert_color(OctreeNode * cur_node, uint8 red, uint8 green, uint8 blue, int depth);
   void reset();
   void make_palette_table(uint8 * output);
+  void make_palette_table(uint8 * output, int in_index);
   void make_palette_table(uint8 * output, int * index, OctreeNode * cur_node);
   int find_color(uint8 red, uint8 green, uint8 blue);
   int find_color(OctreeNode * cur_node, uint8 red, uint8 green, uint8 blue, int depth);
