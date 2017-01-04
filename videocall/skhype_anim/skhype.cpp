@@ -15,7 +15,7 @@ typedef struct _tile_data
     uint8 pixels[8];
 } tile_data;
 
-bool process_image(string filename, vector<tile_data> &tile_set)
+uint8 * read_file(string filename)
 {
     uint8 * image_data;
     image_data = new unsigned char[SSIZE_X * SSIZE_Y * 8 * 8 * 3];
@@ -30,7 +30,7 @@ bool process_image(string filename, vector<tile_data> &tile_set)
       if (image_size != SSIZE_X * SSIZE_Y * 8 * 8 * 3)
       {
           cout << "Image wrong size (expected " << (SSIZE_X * SSIZE_Y * 8 * 8 * 3) << "): " << filename << endl;
-          return false;
+          return 0;
       }
       
       image_file.seekg(0, ios::beg);
@@ -40,9 +40,14 @@ bool process_image(string filename, vector<tile_data> &tile_set)
     else
     {
         cout << "Unable to open " << filename << endl;
-        return false;
+        return 0;
     }
+    return image_data;
+}
 
+bool process_image(string filename, vector<tile_data> &tile_set)
+{
+    uint8 * image_data = read_file(filename);
     // Loop through tiles
     // check current list of tiles
     // make new entry if needed
@@ -108,31 +113,7 @@ bool process_image(string filename, vector<tile_data> &tile_set)
 
 void tilize_image(string filename, vector<tile_data> &tile_set, int tile_offset, uint8 * output)
 {
-    uint8 * image_data;
-    image_data = new unsigned char[SSIZE_X * SSIZE_Y * 8 * 8 * 3];
-
-    // Read in file 1
-    ifstream image_file(filename.c_str(), ios::in | ios::binary | ios::ate);
-    if (image_file.is_open())
-    {
-      streampos image_size;
-      image_size = image_file.tellg();
-
-      if (image_size != SSIZE_X * SSIZE_Y * 8 * 8 * 3)
-      {
-          cout << "Image wrong size (expected " << (SSIZE_X * SSIZE_Y * 8 * 8 * 3) << "): " << filename << endl;
-          return;
-      }
-      
-      image_file.seekg(0, ios::beg);
-      image_file.read((char *)image_data, image_size);
-      image_file.close();
-    }
-    else
-    {
-        cout << "Unable to open " << filename << endl;
-        return;
-    }
+    uint8 * image_data = read_file(filename);
 
     for (int tile_y = 0; tile_y < SSIZE_Y; tile_y++)
     {
@@ -320,24 +301,25 @@ int main ()
         trans_nop();
     }
     
-    // The final frame + this frame will use 315 tiles
-    // That means tiles past 65+315 are now unused
+    // Reprocess the tile set to include the final frame, the current frame, and the next frames
+    tile_set.clear();
+    process_image("images/skhype_logo015.rgb", tile_set);
+    process_image("images/skhype_logo005.rgb", tile_set);
+
+    process_image("images/skhype_logo008a.rgb", tile_set);
+    process_image("images/skhype_logo007.rgb", tile_set);
+    process_image("images/skhype_logo006.rgb", tile_set);
     
-    vector<tile_data> tile_set2;
-    // Process the next images into tiles and store those starting at 65+315
-    process_image("images/skhype_logo008a.rgb", tile_set2);
-    process_image("images/skhype_logo007.rgb", tile_set2);
-    process_image("images/skhype_logo006.rgb", tile_set2);
-    
-    uint8 tiles_bitplaned2[tile_set2.size() * 8 * 8];
-    for (int i = 0; i < tile_set2.size(); i++)
+    // Bitplane the new tiles
+    uint8 tiles_bitplaned2[tile_set.size() * 8 * 8];
+    for (int i = 0; i < tile_set.size(); i++)
     {
         for (int pixel_y = 0; pixel_y < 8; pixel_y++)
         {
             for (int pixel_x = 0; pixel_x < 8; pixel_x++)
             {
                 // Convert 8-bit packed to quantized data (0 = palette #0, 1 = palette #255)
-                if ((tile_set2[i].pixels[pixel_y] & (1 << (7 - pixel_x))) != 0)
+                if ((tile_set[i].pixels[pixel_y] & (1 << (7 - pixel_x))) != 0)
                 {
                     cur_tile[pixel_y * 8 + pixel_x] = 255;
                 }
@@ -353,12 +335,12 @@ int main ()
         bitplane_tile(tile_rows, &tiles_bitplaned2[i*8*8]);
     }
 
-    // Store the tiles starting at tile 65+315
+    // Store the new tiles
     // Keep high tile map showing
-    trans_vram_data(tiles_bitplaned2, tile_set2.size() * 8 * 8, ((65+315) * 8 * 8) / 2, 4, 4);
+    trans_vram_data(tiles_bitplaned2, tile_set.size() * 8 * 8, (65 * 8 * 8) / 2, 4, 4);
     
     // prepare the next tile map using the new numbers
-    tilize_image("images/skhype_logo006.rgb", tile_set2, 65+315, tilemap);
+    tilize_image("images/skhype_logo006.rgb", tile_set, 65, tilemap);
     // Send the next tile map and switch to it
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
 
@@ -367,7 +349,7 @@ int main ()
         trans_nop();
     }
     
-    tilize_image("images/skhype_logo007.rgb", tile_set2, 65+315, tilemap);
+    tilize_image("images/skhype_logo007.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
     for (int i = 0; i < 30; i++)
@@ -375,7 +357,7 @@ int main ()
         trans_nop();
     }
     
-    tilize_image("images/skhype_logo008a.rgb", tile_set2, 65+315, tilemap);
+    tilize_image("images/skhype_logo008a.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
     for (int i = 0; i < 30; i++)
