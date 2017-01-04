@@ -194,7 +194,9 @@ void tilize_image(string filename, vector<tile_data> &tile_set, int tile_offset,
 
 int main ()
 {
-    // Palette: 0-254 = black, 255 = white
+    trans_nop();
+  
+    // Palette: 0-255 = black
     uint8 palette[256*3];
     for (int i = 0; i < 256; i++)
     {
@@ -202,13 +204,9 @@ int main ()
         palette[i*3 + 1] = 0;
         palette[i*3 + 2] = 0;
     }
-    palette[255*3 + 0] = 255;
-    palette[255*3 + 1] = 255;
-    palette[255*3 + 2] = 255;
   
     // Send palette, switch to high tile map
-    trans_palette(palette, true);    
-  
+    trans_palette(palette, false);
   
     // Convert images to tiles
     vector<tile_data> tile_set;
@@ -260,6 +258,20 @@ int main ()
     // Send the tile map for this image and switch to it
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
+    // Palette: 0-254 = black, 255 = white
+    for (int i = 0; i < 256; i++)
+    {
+        palette[i*3 + 0] = 0;
+        palette[i*3 + 1] = 0;
+        palette[i*3 + 2] = 0;
+    }
+    palette[255*3 + 0] = 255;
+    palette[255*3 + 1] = 255;
+    palette[255*3 + 2] = 255;
+  
+    // Send palette, switch to low tile map
+    trans_palette(palette, true);    
+
     // Delay between each animation frame
     for (int i = 0; i < 30; i++)
     {
@@ -302,6 +314,8 @@ int main ()
     
     tilize_image("images/skhype_logo005.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
+    
+    trans_nop();
     
     return 0;
     
