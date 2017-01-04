@@ -210,15 +210,15 @@ int main ()
   
     // Convert images to tiles
     vector<tile_data> tile_set;
-    process_image("images/skhype_logo000.rgb", tile_set);
-    process_image("images/skhype_logo001.rgb", tile_set);
-    process_image("images/skhype_logo002.rgb", tile_set);
-    process_image("images/skhype_logo003.rgb", tile_set);
+    // Process images backwards so that tiles used in later images are first in the tile set
+    // Start with the final frame so that it is always in the tile set
+    process_image("images/skhype_logo015.rgb", tile_set);
     process_image("images/skhype_logo005.rgb", tile_set);
-    // process_image("images/skhype_logo006.rgb", tile_set);
-    // process_image("images/skhype_logo007.rgb", tile_set);
-    // process_image("images/skhype_logo008.rgb", tile_set);
-    //process_image("images/skhype_logo015.rgb", tile_set);
+
+    process_image("images/skhype_logo003.rgb", tile_set);
+    process_image("images/skhype_logo002.rgb", tile_set);
+    process_image("images/skhype_logo001.rgb", tile_set);
+    process_image("images/skhype_logo000.rgb", tile_set);
     
     uint8 tiles_bitplaned[tile_set.size() * 8 * 8];
     uint8 cur_tile[8*8];
@@ -314,6 +314,100 @@ int main ()
     
     tilize_image("images/skhype_logo005.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
+    
+    for (int i = 0; i < 30; i++)
+    {
+        trans_nop();
+    }
+    
+    // The final frame + this frame will use 315 tiles
+    // That means tiles past 65+315 are now unused
+    
+    vector<tile_data> tile_set2;
+    // Process the next images into tiles and store those starting at 65+315
+    process_image("images/skhype_logo008a.rgb", tile_set2);
+    process_image("images/skhype_logo007.rgb", tile_set2);
+    process_image("images/skhype_logo006.rgb", tile_set2);
+    
+    uint8 tiles_bitplaned2[tile_set2.size() * 8 * 8];
+    for (int i = 0; i < tile_set2.size(); i++)
+    {
+        for (int pixel_y = 0; pixel_y < 8; pixel_y++)
+        {
+            for (int pixel_x = 0; pixel_x < 8; pixel_x++)
+            {
+                // Convert 8-bit packed to quantized data (0 = palette #0, 1 = palette #255)
+                if ((tile_set2[i].pixels[pixel_y] & (1 << (7 - pixel_x))) != 0)
+                {
+                    cur_tile[pixel_y * 8 + pixel_x] = 255;
+                }
+                else
+                {
+                    cur_tile[pixel_y * 8 + pixel_x] = 0;
+                }
+            }
+            // Collect tile rows into array
+            tile_rows[pixel_y] = &cur_tile[pixel_y * 8];
+        }
+        // Bitplane the current tile into the temporary vram data
+        bitplane_tile(tile_rows, &tiles_bitplaned2[i*8*8]);
+    }
+
+    // Store the tiles starting at tile 65+315
+    // Keep high tile map showing
+    trans_vram_data(tiles_bitplaned2, tile_set2.size() * 8 * 8, ((65+315) * 8 * 8) / 2, 4, 4);
+    
+    // prepare the next tile map using the new numbers
+    tilize_image("images/skhype_logo006.rgb", tile_set2, 65+315, tilemap);
+    // Send the next tile map and switch to it
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
+
+    for (int i = 0; i < 30; i++)
+    {
+        trans_nop();
+    }
+    
+    tilize_image("images/skhype_logo007.rgb", tile_set2, 65+315, tilemap);
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
+    
+    for (int i = 0; i < 30; i++)
+    {
+        trans_nop();
+    }
+    
+    tilize_image("images/skhype_logo008a.rgb", tile_set2, 65+315, tilemap);
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
+    
+    for (int i = 0; i < 30; i++)
+    {
+        trans_nop();
+    }
+    
+    trans_nop();
+    
+    return 0;
+
+    
+
+    
+    // READY FOR LINES
+    // Setup tiles 
+    // Setup tile map
+    // send tile map
+    // script palette changes
+    
+    // FINAL FRAME
+
+    // Fill video area tiles with black
+    uint8 blank_video_area[VSIZE_X * VSIZE_Y * 8 * 8];
+    for (int i = 0; i < VSIZE_X * VSIZE_Y * 8 * 8; i++)
+    {
+        blank_video_area[i] = 0;
+    }
+    trans_frame(blank_video_area, false, true);
+    trans_frame(blank_video_area, true, true);
+    
+    // Fix both tile maps to include video area
     
     trans_nop();
     
