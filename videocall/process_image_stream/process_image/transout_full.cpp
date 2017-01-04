@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     if (interval < 1)
     {
         cout << "Invalid palette interval\n";
+        return -1;
     }
   
     uint8 video_frame[VFRAME_RGB_SIZE * interval];
@@ -79,14 +80,17 @@ int main(int argc, char *argv[])
             }
         }
         
-        foo.reduce(256);
+        foo.reduce(254);
     
         uint8 palette[256*3];
         for (int i = 0; i < 256*3; i++)
         {
             palette[i] = 0;
         }
-        foo.make_palette_table(palette);
+        foo.make_palette_table(&palette[3]);
+        palette[255*3+0] = 255;
+        palette[255*3+1] = 255;
+        palette[255*3+2] = 255;
         
         for (int frame = 0; frame < interval; frame++)
         {
