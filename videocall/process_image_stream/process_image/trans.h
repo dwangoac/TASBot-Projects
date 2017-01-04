@@ -27,3 +27,4 @@ bool trans_frame_stdin();
 bool trans_frame(uint8 *input, bool highmem, bool final_highmem);
 void trans_vram_data(uint8 *input, int length, int offset, uint8 intermediate_page, uint8 final_page);
 void bitplane_tile(uint8 **rows, uint8 *output);
+void trans_nop();

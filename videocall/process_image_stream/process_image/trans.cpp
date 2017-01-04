@@ -170,3 +170,11 @@ void bitplane_tile(uint8 **rows, uint8 *output)
         }
     }
 }
+
+void trans_nop()
+{
+    for (int i = 0; i < SPEED * 16; i++)
+    {
+        cout.put(0);
+    }
+}
