@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
         // Convert it to a palette
         pal1.reduce(254);
     
-        uint8 palette[256*3];
         for (int i = 0; i < 256*3; i++)
         {
             palette[i] = 0;
