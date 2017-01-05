@@ -290,24 +290,28 @@ int main ()
     // Send tile map
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
-    // Send palette to pop in borders
-    // Palette: 0-254 = black, 255 = white
-    for (int i = 0; i < 256; i++)
+    // Fade in borders
+    for (int j = 0; j < 256; j+=4)
     {
-        palette[i*3 + 0] = 0;
-        palette[i*3 + 1] = 0;
-        palette[i*3 + 2] = 0;
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = j;
+        palette[255*3 + 1] = j;
+        palette[255*3 + 2] = j;
+        trans_palette(palette, true);  
     }
-    palette[255*3 + 0] = 255;
-    palette[255*3 + 1] = 255;
-    palette[255*3 + 2] = 255;
-    trans_palette(palette, true);  
     
+    // Wait
     for (int i = 0; i < 60; i++)
     {
         trans_nop();
     }
     
+    // Fade in text
     for (int j = 0; j < 256; j+=4)
     {
         for (int i = 0; i < 256; i++)
@@ -325,6 +329,7 @@ int main ()
         trans_palette(palette, true);  
     }
     
+    // Set up tile map to have both borders and text as color #255
     tilize_image("images/super_n64.rgb", tile_set, 65, tilemap);
 
     // Fix the tile map to work with video again
@@ -352,6 +357,7 @@ int main ()
     
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 4, 0);
     
+    // Turn off color #254
     // Palette: 0-254 = black, 255 = white
     for (int i = 0; i < 256; i++)
     {
