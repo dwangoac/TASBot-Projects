@@ -281,11 +281,27 @@ int main ()
   
     // Send palette, switch to low tile map
     trans_palette(palette, true);    
-
+    
     // Delay between each animation frame
-    for (int i = 0; i < 30; i++)
+
+    for (int i = 0; i < 5*60-10; i++)
     {
         trans_nop();
+    }
+    
+    for (int j = 0; j < 10; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 255 - ((255-0x7a)/40 * (j+1));
+        palette[255*3 + 1] = 255 - ((255-0xd5)/40 * (j+1));
+        palette[255*3 + 2] = 255 - ((255-0xff)/40 * (j+1));
+        
+        trans_palette(palette, true);
     }
     
     // Prepare the next tile map
@@ -293,31 +309,84 @@ int main ()
     // Send the next tile map and switch to it
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
-    for (int i = 0; i < 30; i++)
+    /*
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
     }
+    */
+    
+    for (int j = 10; j < 20; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 255 - ((255-0x7a)/40 * (j+1));
+        palette[255*3 + 1] = 255 - ((255-0xd5)/40 * (j+1));
+        palette[255*3 + 2] = 255 - ((255-0xff)/40 * (j+1));
+        
+        trans_palette(palette, false);
+    }
+    
     
     tilize_image("images/skhype_logo002.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
-    
-    for (int i = 0; i < 30; i++)
+   
+/*   
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
     }
-    
+*/    
+
+    for (int j = 20; j < 30; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 255 - ((255-0x7a)/40 * (j+1));
+        palette[255*3 + 1] = 255 - ((255-0xd5)/40 * (j+1));
+        palette[255*3 + 2] = 255 - ((255-0xff)/40 * (j+1));
+        
+        trans_palette(palette, true);
+    }
+
     tilize_image("images/skhype_logo003.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
-    for (int i = 0; i < 30; i++)
+    /*
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
+    }
+    */
+    
+    for (int j = 30; j < 40; j++)
+    {
+        // Palette: 0-254 = black, 255 = white
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 255 - ((255-0x7a)/40 * (j+1));
+        palette[255*3 + 1] = 255 - ((255-0xd5)/40 * (j+1));
+        palette[255*3 + 2] = 255 - ((255-0xff)/40 * (j+1));
+        
+        trans_palette(palette, false);
     }
     
     tilize_image("images/skhype_logo004.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 90; i++)
     {
         trans_nop();
     }
@@ -325,7 +394,7 @@ int main ()
     tilize_image("images/skhype_logo005.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 6*60-14-90; i++)
     {
         trans_nop();
     }
@@ -375,31 +444,81 @@ int main ()
     // Send the next tile map and switch to it
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
 
-    for (int i = 0; i < 30; i++)
+    /*
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
+    }*/
+    
+    for (int j = 0; j < 10; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 0x7a + ((255-0x7a)/30 * (j+1));
+        palette[255*3 + 1] = 0xd5 + ((255-0xd5)/30 * (j+1));
+        palette[255*3 + 2] = 0xff + ((255-0xff)/30 * (j+1));
+        
+        trans_palette(palette, true);
     }
     
     tilize_image("images/skhype_logo007.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
-    for (int i = 0; i < 30; i++)
+    /*
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
+    }
+    */
+    
+    for (int j = 10; j < 20; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 0x7a + ((255-0x7a)/30 * (j+1));
+        palette[255*3 + 1] = 0xd5 + ((255-0xd5)/30 * (j+1));
+        palette[255*3 + 2] = 0xff + ((255-0xff)/30 * (j+1));
+        
+        trans_palette(palette, false);
     }
     
     tilize_image("images/skhype_logo008a.rgb", tile_set, 65, tilemap);
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
-    for (int i = 0; i < 30; i++)
+    /*
+    for (int i = 0; i < 10; i++)
     {
         trans_nop();
+    }
+    */
+    
+    for (int j = 20; j < 30; j++)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = 0x7a + ((255-0x7a)/30 * (j+1));
+        palette[255*3 + 1] = 0xd5 + ((255-0xd5)/30 * (j+1));
+        palette[255*3 + 2] = 0xff + ((255-0xff)/30 * (j+1));
+        
+        trans_palette(palette, true);
     }
     
     trans_nop();
     
-    // 8a is the starting point for the lines animation
-    uint8 * image_data = read_file("images/skhype_logo008a.rgb");
+    // 8b is the starting point for the lines animation
+    uint8 * image_data = read_file("images/skhype_logo008b.rgb");
     
     // Add pixels of a specific color to the image data at certain positions
     int color_counter = 1;
@@ -503,7 +622,7 @@ int main ()
     
     
     int tile_counter = 0;
-    uint8 line_tiles_bitplaned[80 * 8 * 8];
+    uint8 line_tiles_bitplaned[133 * 8 * 8];
     for (int i = 0; i < 5; i++)
     {
         bitplane_pal_tile(image_data, (6+i), 4, &line_tiles_bitplaned[tile_counter*8*8]);
@@ -559,6 +678,37 @@ int main ()
         tile_counter++;
     }
     
+    for (int j = 0; j < 3; j++)
+    {
+        for (int i = 0; i < 12; i++)
+        {
+            bitplane_pal_tile(image_data, (10+i), (21+j), &line_tiles_bitplaned[tile_counter*8*8]);
+            set_tilemap_tile(tilemap, (10+i), (21+j), SSIZE_X, SSIZE_Y, (65+line_tiles_start+tile_counter));
+            tile_counter++;
+        }
+    }
+    
+    for (int j = 0; j < 3; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            bitplane_pal_tile(image_data, (29+i), (25+j), &line_tiles_bitplaned[tile_counter*8*8]);
+            set_tilemap_tile(tilemap, (29+i), (25+j), SSIZE_X, SSIZE_Y, (65+line_tiles_start+tile_counter));
+            tile_counter++;
+        }
+    }
+    
+    for (int j = 0; j < 2; j++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            bitplane_pal_tile(image_data, (28+i), j, &line_tiles_bitplaned[tile_counter*8*8]);
+            set_tilemap_tile(tilemap, (28+i), j, SSIZE_X, SSIZE_Y, (65+line_tiles_start+tile_counter));
+            tile_counter++;
+        }
+    }
+    
+    // Set up palette to show the lines at the bottom of the screen
     for (int i = 0; i < 256; i++)
     {
         palette[i*3 + 0] = 0;
@@ -580,12 +730,13 @@ int main ()
 
     trans_palette(palette, true);    
     
-    trans_vram_data(line_tiles_bitplaned, 80 * 8 * 8, ((65 + line_tiles_start) * 8 * 8) / 2, 0, 0);
-    
+    // Send color tiles
+    trans_vram_data(line_tiles_bitplaned, 133 * 8 * 8, ((65 + line_tiles_start) * 8 * 8) / 2, 0, 0);
+    // Send new tile map
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 4);
     
   
-    
+    // "Draw" lines by changing the colors in the palette
     for (int j = 0; j < 128; j++)
     {
         for (int i = 0; i < 256; i++)
@@ -621,25 +772,60 @@ int main ()
         
         trans_palette(palette, false);    
     }
+    
+    // Fade in icons
+    for (int j = 0; j < 256; j+=4)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        for (int i = 0x0c; i < 256; i++)
+        {
+            palette[i*3 + 0] = 255;
+            palette[i*3 + 1] = 255;
+            palette[i*3 + 2] = 255;
+        }
+        
+        palette[0] = 0;
+        palette[1] = 0;
+        palette[2] = 0;
+        palette[254*3 + 0] = j;
+        palette[254*3 + 1] = j;
+        palette[254*3 + 2] = j;
+        
+        palette[255*3 + 0] = 255;
+        palette[255*3 + 1] = 255;
+        palette[255*3 + 2] = 255;
 
-    trans_nop();
-    return 0;
+        
+        trans_palette(palette, false);  
+    }
+    
+    // Submit the final frame
+    tilize_image("images/skhype_logo015.rgb", tile_set, 65, tilemap);
+    // Write the tile map to high and low, end on low
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 0);
 
-
+    // Change palette to all black except 255
+    for (int i = 0; i < 256; i++)
+    {
+        palette[i*3 + 0] = 0;
+        palette[i*3 + 1] = 0;
+        palette[i*3 + 2] = 0;
+    }
+    palette[0] = 0;
+    palette[1] = 0;
+    palette[2] = 0;
+    palette[255*3 + 0] = 255;
+    palette[255*3 + 1] = 255;
+    palette[255*3 + 2] = 255;
+    trans_palette(palette, true);
     
     
-    
-    
-    
-    
-    // READY FOR LINES
-    // Setup tiles 
-    // Setup tile map
-    // send tile map
-    // script palette changes
-    
-    /*
-    // FINAL FRAME
 
     // Fill video area tiles with black
     uint8 blank_video_area[VSIZE_X * VSIZE_Y * 8 * 8];
@@ -649,12 +835,37 @@ int main ()
     }
     trans_frame(blank_video_area, false, true);
     trans_frame(blank_video_area, true, true);
+
     
-    // Fix both tile maps to include video area
-    */
+    // Re-write video tiles to tilemaps and upload them, end on low
+    for (int tile_y = 0; tile_y < VSIZE_Y; tile_y++)
+    {
+        for (int tile_x = 0; tile_x < VSIZE_X; tile_x++)
+        {
+            int highmem_tile_addr = 576 + tile_y * VSIZE_X + tile_x;
+            tilemap[((tile_y+7) * SSIZE_X * 2) + ((tile_x + 8) * 2) + 0] = highmem_tile_addr & 0xFF;
+            tilemap[((tile_y+7) * SSIZE_X * 2) + ((tile_x + 8) * 2) + 1] = (highmem_tile_addr >> 8) & 0x0F;
+        }
+    }
+    
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 0, 0);
+    for (int tile_y = 0; tile_y < VSIZE_Y; tile_y++)
+    {
+        for (int tile_x = 0; tile_x < VSIZE_X; tile_x++)
+        {
+            int highmem_tile_addr = 800 + tile_y * VSIZE_X + tile_x;
+            tilemap[((tile_y+7) * SSIZE_X * 2) + ((tile_x + 8) * 2) + 0] = highmem_tile_addr & 0xFF;
+            tilemap[((tile_y+7) * SSIZE_X * 2) + ((tile_x + 8) * 2) + 1] = (highmem_tile_addr >> 8) & 0x0F;
+        }
+    }
+    
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 0, 0);
+
+
+
     trans_nop();
-    
     return 0;
+
     
     cout << "Tile set size: " << tile_set.size() << endl;
     return 0;
