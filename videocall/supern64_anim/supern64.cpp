@@ -352,6 +352,18 @@ int main ()
     
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, (32 * 8 * 8) / 2, 4, 0);
     
+    // Palette: 0-254 = black, 255 = white
+    for (int i = 0; i < 256; i++)
+    {
+        palette[i*3 + 0] = 0;
+        palette[i*3 + 1] = 0;
+        palette[i*3 + 2] = 0;
+    }
+    palette[255*3 + 0] = 255;
+    palette[255*3 + 1] = 255;
+    palette[255*3 + 2] = 255;
+    trans_palette(palette, true);  
+    
     trans_nop();
     
     return 0;
