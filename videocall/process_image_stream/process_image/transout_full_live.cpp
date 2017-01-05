@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
                     pal2.insert_color(video_frame[i-2], video_frame[i-1], video_frame[i]);
                     
                     // Use the old octree to find this color
-                    quan_data[i] = pal1.find_color(video_frame[i*3+0],video_frame[i*3+1],video_frame[i*3+2]);
+                    quan_data[i] = pal1.find_color(video_frame[i-2],video_frame[i-1],video_frame[i]);
                 }
                                 
             }
