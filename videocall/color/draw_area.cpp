@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QDebug>
 
+#include <IrcBuffer> 
+#include <QThread>
 draw_area::draw_area(QWidget *parent) : QWidget(parent)
 {
 	QDirIterator it("../twitchemotes", QStringList() << "*.png", QDir::Files, QDirIterator::Subdirectories);
@@ -14,6 +16,22 @@ draw_area::draw_area(QWidget *parent) : QWidget(parent)
 	}
 	image = new QPixmap(SNES_WIDTH, SNES_HEIGHT);
 	image->fill(Qt::blue);
+	
+	qputenv("IRC_DEBUG", "1");
+	
+	irc.setHost(IRC_HOST);
+        irc.setUserName("tasbot");
+	irc.setPassword(IRC_PASSWORD);
+        irc.setNickName("tasbot");
+        irc.setRealName("tasbot_666");
+	irc.join(IRC_CHANNEL);
+	irc.setPort(IRC_PORT);
+        irc.setSecure(IRC_USE_SSL);
+	irc.setReconnectDelay(1);
+	
+	connect(&irc, &bot::statusChanged, this, [](IrcConnection::Status status){ qDebug() << status; });
+	
+	irc.open();
 }
 
 void draw_area::paintEvent(QPaintEvent *event)

@@ -5,8 +5,10 @@
 #-------------------------------------------------
 
 QT       += core gui
+CONFIG += communi
+COMMUNI += core model util
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
 
 TARGET = color
 TEMPLATE = app
@@ -14,8 +16,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         main_window.cpp \
-    draw_area.cpp
+    draw_area.cpp \
+    bot.cpp
 
 HEADERS  += main_window.h \
     draw_area.h \
-    settings.h
+    settings.h \
+    bot.h

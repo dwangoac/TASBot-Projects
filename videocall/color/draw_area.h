@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QImage>
 #include <QMap>
+#include "bot.h"
 
 class draw_area : public QWidget
 {
@@ -17,6 +18,7 @@ class draw_area : public QWidget
 	private:
 		QPixmap *image;
 		QMap<QString, QImage *> emotes;
+		bot irc;
 };
 
 #endif // DRAW_AREA_H
