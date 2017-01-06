@@ -17,4 +17,5 @@ SOURCES += main.cpp\
     draw_area.cpp
 
 HEADERS  += main_window.h \
-    draw_area.h
+    draw_area.h \
+    settings.h

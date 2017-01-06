@@ -11,8 +11,11 @@ class draw_area : public QWidget
 	public:
 		explicit draw_area(QWidget *parent = 0);
 		
+	protected:
+		void paintEvent(QPaintEvent *event);
+		
 	private:
-		QPixmap image;
+		QPixmap *image;
 		QMap<QString, QImage *> emotes;
 };
 
