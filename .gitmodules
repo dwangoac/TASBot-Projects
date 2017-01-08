@@ -1,0 +1,3 @@
+[submodule "videocall/psoc"]
+	path = videocall/psoc
+	url = https://github.com/pjgat09/tasbot.git
