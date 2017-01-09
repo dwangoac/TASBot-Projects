@@ -70,8 +70,6 @@ pcm_vbv3:
 	
 	stx $4016       ;4
 	sty $4016       ;4
-	stx $00
-	stx $01
 	
 pcm_start:   
 
@@ -85,30 +83,7 @@ pcm_start:
 	ASL A
 
 	EOR $4017
-	STA $4011
-
-	BNE +			;2 (3)
-	STX $01			;3
-	JMP ++			;3
-+ 	STY $01			;3
-	NOP				;2
-++
-
-	LDA $4017       ;4
-	ASL A           ;2
-
-	EOR $4017
 	ASL A
-
-	EOR $4017
-	ASL A
-
-	LSR A			; 2
-	ORA $01			; 3
-	STA $01			; 3	; this should store 0xff if previous was 00 and this is 7f
-
-	LDA $4017       ;4
-	ASL A           ;2
 
 	EOR $4017
 	ASL A
@@ -119,12 +94,20 @@ pcm_start:
 	EOR $4017
 	STA $4011
 
-	LDA $00			; 3
-	ORA $01			; 3
-	BEQ	pcm_exit	; 2
+	LDA $4017
+	STA $7FFF       ;4
 
 	LDA $4017       ;4
 	ASL A           ;2
+
+	EOR $4017
+	ASL A
+
+	EOR $4017
+	ASL A
+
+	EOR $4017
+	ASL A
 
 	EOR $4017
 	ASL A
@@ -148,14 +131,19 @@ pcm_start:
 	ASL A
 
 	EOR $4016
+	ASL A
+
+	EOR $4016
+	ASL A
+
+	EOR $4016
+	ASL A
+
+	EOR $4016
 	STA $4011
 
-	BNE +			;2 (3)
-	STX $00			;3
-	JMP ++			;3
-+ 	STY $00			;3
-	NOP				;2
-++
+	LDA $4016       ;4
+	STA $7FFF       ;4
 
 	LDA $4016       ;4
 	ASL A           ;2
@@ -167,14 +155,7 @@ pcm_start:
 	ASL A
 
 	EOR $4016
-	STA $4011
-
-	LSR A			; 2
-	ORA $00			; 3
-	STA $00			; 3	; this should store 0xff if previous was 00 and this is 7f
-
-	LDA $4016       ;4
-	ASL A           ;2
+	ASL A
 
 	EOR $4016
 	ASL A
@@ -185,27 +166,9 @@ pcm_start:
 	EOR $4016
 	STA $4011
 
-	INC $00			; 5 (turns it to 0)
-	LDA $00			; 3 (waste cycles)
+	rol $00
+	jmp pcm_start
 
-	LDA $4016       ;4
-	ASL A           ;2
-
-	EOR $4016       ;4
-	ASL A           ;2
-
-	EOR $4016       ;4
-	ASL A           ;2
-
-	EOR $4016       ;4
-	STA $4011       ;4
-
-	ROL $00         ;5
-	JMP pcm_start   ;3
-
-pcm_exit:
-	jmp pcm_exit
-	
 pcm_paldata:
 	.incbin "pcm.pal"
 	
