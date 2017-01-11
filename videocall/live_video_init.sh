@@ -1,8 +1,27 @@
 #!/bin/bash
 
-R_CHANNEL_DEVICE=/dev/ttyACM0
-L_CHANNEL_DEVICE=/dev/ttyACM1
-V_DEVICE=/dev/ttyACM2
+if ! [ -e /tmp/aaaL ] || ! [ -p /tmp/aaaL ]; then
+  if [ -e /tmp/aaaL ]; then
+    rm /tmp/aaaL;
+  fi;
+  mkfifo /tmp/aaaL;
+fi;
+
+if ! [ -e /tmp/aaaR ] || ! [ -p /tmp/aaaR ]; then
+  if [ -e /tmp/aaaR ]; then
+    rm /tmp/aaaR;
+  fi;
+  mkfifo /tmp/aaaR;
+fi;
+
+if ! [ -e /tmp/vvv ] || ! [ -p /tmp/v ]; then
+  if [ -e /tmp/vvv ]; then
+    rm /tmp/vvv;
+  fi;
+  mkfifo /tmp/vvv;
+fi;
+
+source port_assignments.sh
 
 (./splitaudio2 /dev/stdout mm /run/user/1001/timing.tmp < /tmp/aaaL | ./pipebuf 10000 | python3 ./psoc/Scripts/play_r16y.py $L_CHANNEL_DEVICE /dev/stdin) &
 (./splitaudio2 /dev/stdout mm /run/user/1001/timing2.tmp < /tmp/aaaR | ./pipebuf 10000 | python3 ./psoc/Scripts/play_r16y.py $R_CHANNEL_DEVICE /dev/stdin) &
