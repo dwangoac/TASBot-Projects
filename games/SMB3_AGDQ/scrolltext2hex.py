@@ -1,5 +1,7 @@
 import sys
 
+# Place the output of this into the "scrolldata" location in payload.asm
+
 charmap = {
 	'A' : 0xb0,
 	'B' : 0xb1,
@@ -77,5 +79,5 @@ st = sys.argv[1]
 for s in st:
 	out += hex(charmap[s]).replace("0x","$") + ","
 
-print(out[:-1])
+print(out[:-1] + ",$00")
 
