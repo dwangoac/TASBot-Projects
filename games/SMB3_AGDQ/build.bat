@@ -15,4 +15,4 @@ convert_bin.py 1 payload.bin
 
 copy base_glitch.txt + stage2.inp + stage3.inp + payload.inp console.inp
 create_r16m.py console.inp
-copy /b smb3_base.r16m + console.r16m build.r16m
+copy /b smb3_base.r16m + console.r16m + padding.r16m build.r16m

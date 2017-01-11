@@ -12,4 +12,4 @@ python3 convert_bin_unix.py 1 payload.o
 
 cat base_glitch.txt stage2.inp stage3.inp payload.inp > console.inp
 python3 create_r16m_unix.py console.inp
-cat smb3_base.r16m console.r16m > build.r16m
+cat smb3_base.r16m console.r16m padding.r16m > build.r16m
