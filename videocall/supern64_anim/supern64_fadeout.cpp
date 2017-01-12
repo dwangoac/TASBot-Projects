@@ -200,7 +200,7 @@ int main ()
 {
     trans_nop();
   
-    // Palette: 0-255 = black
+    // Palette: 0-253 = black, 254-255 = White
     uint8 palette[256*3];
     for (int i = 0; i < 256; i++)
     {
@@ -208,13 +208,77 @@ int main ()
         palette[i*3 + 1] = 0;
         palette[i*3 + 2] = 0;
     }
-  
+    palette[254*3 + 0] = 255;
+    palette[254*3 + 1] = 255;
+    palette[254*3 + 2] = 255;
+    palette[255*3 + 0] = 255;
+    palette[255*3 + 1] = 255;
+    palette[255*3 + 2] = 255;
+
     // Send palette, switch to high tile map
-    trans_palette(palette, false);    
-  
+    trans_palette(palette, false);
+    
+    // Re-generate the tileset for the border + final layout
     vector<tile_data> tile_set;
-    // Process the final result image first to generate the required tiles
     process_image("images/border.rgb", tile_set);
+    int border_tileset_size = tile_set.size();
+    process_image("images/super_n64.rgb", tile_set);
+    int final_tile_size = tile_set.size();
+    
+    // Generate a separate tile set for the text
+    vector<tile_data> tile_set_text;
+    process_image("images/text.rgb", tile_set_text);
+    int text_tile_size = tile_set_text.size();
+
+    // Convert the border to tiles
+    uint8 tilemap[SSIZE_X*SSIZE_Y*2];
+    tilize_image("images/border.rgb", tile_set, 65, tilemap);
+
+    // Convert text-only to color tiles
+    uint8 tilemap_text[SSIZE_X*SSIZE_Y*2];
+    tilize_image("images/text.rgb", tile_set_text, 65+final_tile_size, tilemap_text);
+    
+    // Copy color text tiles to border tile map
+    for (int j = 0; j < 5; j++)
+    {
+        for (int i = 0; i < 22; i++)
+        {
+            tilemap[(22+j)*SSIZE_X*2+(5+i)*2+0]=tilemap_text[(22+j)*SSIZE_X*2+(5+i)*2+0];
+            tilemap[(22+j)*SSIZE_X*2+(5+i)*2+1]=tilemap_text[(22+j)*SSIZE_X*2+(5+i)*2+1];
+        }
+    }
+    
+    // Send tile map
+    trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
+
+    // Fade out text
+    for (int j = 252; j >= 0; j-=4)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[254*3 + 0] = j;
+        palette[254*3 + 1] = j;
+        palette[254*3 + 2] = j;
+        palette[255*3 + 0] = 255;
+        palette[255*3 + 1] = 255;
+        palette[255*3 + 2] = 255;
+
+        trans_palette(palette, true);  
+    }
+
+    trans_nop();
+    
+    return 0;
+
+    
+
+    
+/*
+    // Process the final result image first to generate the required tiles
     process_image("images/super_n64.rgb", tile_set);
     int final_tile_size = tile_set.size();
         
@@ -223,10 +287,7 @@ int main ()
     process_image("images/text.rgb", tile_set_text);
     int text_tile_size = tile_set_text.size();
     
-    // Storage for border tiles + text tiles + color text tiles
     uint8 tiles_bitplaned[(final_tile_size + text_tile_size) * 8 * 8];
-    
-    // Bitplane the color#255 tiles
     uint8 cur_tile[8*8];
     uint8* tile_rows[8];
     for (int i = 0; i < final_tile_size; i++)
@@ -249,7 +310,6 @@ int main ()
         bitplane_tile(tile_rows, &tiles_bitplaned[i*8*8]);
     }
     
-    // Bitplane the color#254 tiles
     for (int i = 0; i < text_tile_size; i++)
     {
         for (int pixel_y = 0; pixel_y < 8; pixel_y++)
@@ -278,11 +338,11 @@ int main ()
     uint8 tilemap[SSIZE_X*SSIZE_Y*2];
     tilize_image("images/border.rgb", tile_set, 65, tilemap);
 
-    // Convert text-only to color tiles
+    // Convert text to color tiles
     uint8 tilemap_text[SSIZE_X*SSIZE_Y*2];
     tilize_image("images/text.rgb", tile_set_text, 65+final_tile_size, tilemap_text);
     
-    // Copy color text tiles to border tile map
+    // Copy text tiles to border tile map
     for (int j = 0; j < 5; j++)
     {
         for (int i = 0; i < 22; i++)
@@ -376,7 +436,7 @@ int main ()
     trans_palette(palette, true);  
     
     trans_nop();
-    
+    */
     return 0;
     
     cout << "Tile set size: " << tile_set.size() << endl;
