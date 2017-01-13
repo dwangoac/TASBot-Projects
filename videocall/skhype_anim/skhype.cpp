@@ -206,8 +206,24 @@ int main ()
 {
     trans_nop();
   
-    // Palette: 0-255 = black
     uint8 palette[256*3];
+    // Fade out old stuff
+    for (int j = 252; j >= 0; j-=4)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = j;
+        palette[255*3 + 1] = j;
+        palette[255*3 + 2] = j;
+
+        trans_palette(palette, false);  
+    }
+
+    // Palette: 0-255 = black
     for (int i = 0; i < 256; i++)
     {
         palette[i*3 + 0] = 0;
@@ -268,6 +284,21 @@ int main ()
     // Send the tile map for this image and switch to it
     trans_vram_data(tilemap, SSIZE_X*SSIZE_Y*2, 0, 4, 0);
     
+    // Fade in "Hype!"
+    for (int j = 0; j < 256; j+=4)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            palette[i*3 + 0] = 0;
+            palette[i*3 + 1] = 0;
+            palette[i*3 + 2] = 0;
+        }
+        palette[255*3 + 0] = j;
+        palette[255*3 + 1] = j;
+        palette[255*3 + 2] = j;
+        trans_palette(palette, true);  
+    }
+    
     // Palette: 0-254 = black, 255 = white
     for (int i = 0; i < 256; i++)
     {
@@ -280,7 +311,9 @@ int main ()
     palette[255*3 + 2] = 255;
   
     // Send palette, switch to low tile map
-    trans_palette(palette, true);    
+    trans_palette(palette, true);
+
+    
     
     // Delay between each animation frame
 
