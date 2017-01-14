@@ -5,10 +5,10 @@
 	.db $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.db $00
 	
-	.db $01, $80, $00, $03		; Copy with PPU on, set $2000 to $80 while copying, and then jump to $0300
+	.db $01, $91, $00, $03		; Copy with PPU on, set $2000 to $80 while copying, and then jump to $0300
 	.db $00, $05, $00, $03		; Copy 2 banks of RAM data to $0300 (this code)
-	.db $01, $04, $00, $24		; Copy 4 banks of PPU data to $2000 (nametable + attributes)
-	.db $01, $10, $00, $10		; Copy 16 banks of PPU data to $0000 (one bank of CHR data)
+	.db $01, $04, $00, $20		; Copy 4 banks of PPU data to $2000 (nametable + attributes)
+	.db $01, $10, $00, $00		; Copy 16 banks of PPU data to $0000 (one bank of CHR data)
 	.db $ff						; End of payload
 
 .org $300
@@ -61,7 +61,7 @@ pcm_vbv3:
 	sta $2005
 	sta $2006
 	sta $2006
-	lda #$11
+	lda #$00
 	sta $2000
 	
 	lda #$00

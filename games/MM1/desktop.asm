@@ -100,6 +100,17 @@ main:
 	jsr wait_frames
 	lda #60
 	jsr wait_frames
+	lda #60
+	jsr wait_frames
+	lda #60
+	jsr wait_frames
+	lda #60
+	jsr wait_frames
+	lda #60
+	jsr wait_frames
+	lda #60
+	jsr wait_frames
+	
 	jmp $0102	; load next part	
 	
 no_gfx:

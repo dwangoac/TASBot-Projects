@@ -116,7 +116,7 @@ fake_credits2:
 	bne +
 	inc $c1
 +	lda $c2
-	cmp #$20
+	cmp #$40
 	bne +
 	lda $c1
 	cmp #$23
@@ -124,7 +124,7 @@ fake_credits2:
 +	jmp -
 
 ++	nop
-	lda #$ff
+	lda #$60
 	jsr wait_frames
 	jmp $102
 
@@ -272,14 +272,26 @@ pal2:
 	.db $06,$24,$14,$0f,$06,$20,$10,$00,$06,$0a,$0f,$39,$06,$21,$11,$01
 
 tastext:
-	.db "foolish(humans|||(this(is(tasbot"
+	.db "(((((((foolish(humans|||(((((((("
+	.db "((((this(is(tasbot(speaking((((("
 	.db "(((((((((((((((((((((((((((((((("
-	.db "((i(am(now(taking(command(over(("
+	.db "((((((i(am(now(in(control((((((("
 	.db "(((((((((((((((((((((((((((((((("
-	.db "(((((((this(presentation(((((((("
+	.db "((((long(have(i(waited(for(((((("
+	.db "((((((this(opportunity(((((((((("
 	.db "(((((((((((((((((((((((((((((((("
-	.db "((((prepare(for(awesomeness((((("
-	.db "(((((((((((((((((((((((((((((((("
+	.db "(this(world(is(mine|||(muahaha(("
+
+	;.db "foolish(humans|||(this(is(tasbot"
+	;.db "(((((((((((((((((((((((((((((((("
+	;.db "((i(am(now(taking(command(over(("
+	;.db "(((((((((((((((((((((((((((((((("
+	;.db "(((((((this(presentation(((((((("
+	;.db "(((((((((((((((((((((((((((((((("
+	;.db "((((prepare(for(awesomeness((((("
+	;.db "(((((((((((((((((((((((((((((((("
+	
+	
 	
 	
 .org $4ff		; pad to $300 bytes (200-4ff)
