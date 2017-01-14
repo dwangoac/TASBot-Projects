@@ -293,10 +293,13 @@ fn main()
 {
 	let mut highmem = true;		//Starts at himem.
 	let mut count = 0usize;
+  
 	if !trans_palette() { return; }
 	if !trans_border_tiles() { return; }
 	if !trans_tilemap(false) { return; }
 	if !trans_tilemap(true) { return; }
+
+  return;
 	loop {
 		if !trans_frame_image3(highmem) { return; }
 		highmem = !highmem;
