@@ -5,7 +5,7 @@
 	.db $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.db $00
 	
-	.db $01, $90, $00, $03		; Copy with PPU on, set $2000 to $90 while copying, and then jump to $0300
+	.db $01, $80, $00, $03		; Copy with PPU on, set $2000 to $90 while copying, and then jump to $0300
 	.db $00, $05, $00, $03		; Copy 5 banks of RAM data to $0300 (this code)
 	.db $01, $04, $00, $20		; Copy 4 banks of PPU data to $2000 (nametable + attributes)
 	.db $01, $10, $00, $00		; Copy 16 banks of PPU data to $0000 (one bank of CHR data)

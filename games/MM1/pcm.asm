@@ -7,8 +7,8 @@
 	
 	.db $01, $80, $00, $03		; Copy with PPU on, set $2000 to $80 while copying, and then jump to $0300
 	.db $00, $05, $00, $03		; Copy 2 banks of RAM data to $0300 (this code)
-	.db $01, $04, $00, $24		; Copy 4 banks of PPU data to $2400 (nametable + attributes)
-	.db $01, $10, $00, $10		; Copy 16 banks of PPU data to $1000 (one bank of CHR data)
+	.db $01, $04, $00, $24		; Copy 4 banks of PPU data to $2000 (nametable + attributes)
+	.db $01, $10, $00, $10		; Copy 16 banks of PPU data to $0000 (one bank of CHR data)
 	.db $ff						; End of payload
 
 .org $300
@@ -61,7 +61,7 @@ pcm_vbv3:
 	sta $2005
 	sta $2006
 	sta $2006
-	lda #%00011001
+	lda #$11
 	sta $2000
 	
 	lda #$00
@@ -73,7 +73,10 @@ pcm_vbv3:
 	stx $00
 	stx $01
 	
-pcm_start:   
+	stx $4016       ;4
+	sty $4016       ;4
+
+pcm_start:
 
 	LDA $4017       ;4
 	ASL A           ;2
@@ -87,25 +90,9 @@ pcm_start:
 	EOR $4017
 	STA $4011
 
-	BNE +			;2 (3)
-	STX $01			;3
-	JMP ++			;3
-+ 	STY $01			;3
-	NOP				;2
-++
-
-	LDA $4017       ;4
 	ASL A           ;2
-
-	EOR $4017
-	ASL A
-
-	EOR $4017
-	ASL A
-
-	LSR A			; 2
-	ORA $01			; 3
-	STA $01			; 3	; this should store 0xff if previous was 00 and this is 7f
+	STA $00         ;3
+	STA $00         ;3
 
 	LDA $4017       ;4
 	ASL A           ;2
@@ -119,9 +106,21 @@ pcm_start:
 	EOR $4017
 	STA $4011
 
-	LDA $00			; 3
-	ORA $01			; 3
-	BEQ	pcm_exit	; 2
+	LDA $4017       ;4
+	ASL A           ;2
+
+	EOR $4017
+	ASL A
+
+	EOR $4017
+	ASL A
+
+	EOR $4017
+	STA $4011
+
+	LDA #%10100000  ;2
+	AND $00         ;3
+	STA $00         ;3
 
 	LDA $4017       ;4
 	ASL A           ;2
@@ -150,12 +149,9 @@ pcm_start:
 	EOR $4016
 	STA $4011
 
-	BNE +			;2 (3)
-	STX $00			;3
-	JMP ++			;3
-+ 	STY $00			;3
-	NOP				;2
-++
+	LDA #%00001110  ;4
+	ORA $00         ;4
+	STA $00         ;4
 
 	LDA $4016       ;4
 	ASL A           ;2
@@ -169,9 +165,8 @@ pcm_start:
 	EOR $4016
 	STA $4011
 
-	LSR A			; 2
-	ORA $00			; 3
-	STA $00			; 3	; this should store 0xff if previous was 00 and this is 7f
+	LDA $0800       ; 4
+	STA $2001       ; 4
 
 	LDA $4016       ;4
 	ASL A           ;2
@@ -185,8 +180,8 @@ pcm_start:
 	EOR $4016
 	STA $4011
 
-	INC $00			; 5 (turns it to 0)
-	LDA $00			; 3 (waste cycles)
+	LDA $7FFF       ;4
+	STA $7FFF       ;4
 
 	LDA $4016       ;4
 	ASL A           ;2
@@ -201,10 +196,7 @@ pcm_start:
 	STA $4011       ;4
 
 	ROL $00         ;5
-	JMP pcm_start   ;3
-
-pcm_exit:
-	jmp pcm_exit
+	JMP pcm_start       ;3
 	
 pcm_paldata:
 	.incbin "pcm.pal"
