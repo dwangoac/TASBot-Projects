@@ -9,7 +9,7 @@ Palette interval is how often to generate and transmit a new palette in frames, 
 
 Output is LoZ_out.r16m
 
-## For emmotes.py ##
+## For emotes.py ##
 
 Requires python3
 
