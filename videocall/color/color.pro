@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
-CONFIG += communi
+CONFIG += communi c++11
 COMMUNI += core model util
 
 QT += widgets
