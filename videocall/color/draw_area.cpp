@@ -324,7 +324,13 @@ draw_area::draw_area(QWidget *parent) : QWidget(parent)
 
 void draw_area::register_color(QString color, unsigned int space)
 {
-	QColor color_rgb = colors[color.toLower()];
+	QColor color_rgb;
+	if (color.at(0).unicode() == 35) {   // "#"
+		color_rgb = QColor(color);
+	}
+	else {
+		color_rgb = colors[color.toLower()];
+	}
 	if(!color_rgb.isValid() || !(color_rgb.rgb() & 0xFFFFFF)){
 		return;
 	}

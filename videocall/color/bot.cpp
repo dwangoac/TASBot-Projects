@@ -3,6 +3,7 @@
 #include <IrcCommand>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QColor>
 
 bot::bot(QObject* parent) : IrcConnection(parent)
 {
@@ -32,6 +33,26 @@ void bot::processMessage(IrcPrivateMessage* message)
 				space = hash(message->nick().toLatin1().data());
 			}
 			emit trigger_color(color, space);
+			return;
+		}
+	}
+	if (pieces[0].at(0).unicode() == 35 && pieces[0].length() == 7) {   // 35 (U+23) = "#"
+		bool rvalid, gvalid, bvalid;
+		auto color = QColor(
+			pieces[0].mid(1, 2).toInt(&rvalid, 16),
+			pieces[0].mid(3, 2).toInt(&gvalid, 16),
+			pieces[0].mid(5, 2).toInt(&bvalid, 16)
+		);
+		if (rvalid && gvalid && bvalid) {
+			bool valid = false;
+			unsigned int space = 0;
+			if(pieces.count() > 1){
+				space = pieces[1].toInt(&valid);
+			}
+			if(!valid){
+				space = hash(message->nick().toLatin1().data());
+			}
+			emit trigger_color(color.name(), space);
 			return;
 		}
 	}
