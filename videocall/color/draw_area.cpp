@@ -226,6 +226,8 @@ QMap<QString, QColor> colors = {
 	{"burgundy", 0x610023},
 	{"plum", 0x580f41},
 	{"gold", 0xdbb40c},
+	{"glod", 0xffdf00},
+	{"tasbot", 0x7a5b07},
 	{"navy", 0x01153e},
 	{"aquamarine", 0x04d8b2},
 	{"rose", 0xcf6275},
