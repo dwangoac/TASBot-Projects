@@ -4,14 +4,14 @@
 --possible bug: you may need to add a frame to the beginning of input
 
 joymap = {}
-joymap["A"]         = 7
-joymap["B"]         = 6
-joymap["Select"]    = 5
-joymap["Start"]     = 4
-joymap["Up"]        = 3
-joymap["Down"]      = 2
-joymap["Left"]      = 1
-joymap["Right"]     = 0
+joymap["A"]         = 0
+joymap["B"]         = 1
+joymap["Select"]    = 2
+joymap["Start"]     = 3
+joymap["Up"]        = 4
+joymap["Down"]      = 5
+joymap["Left"]      = 6
+joymap["Right"]     = 7
 
 file_suffix = "frame.r08"
     
@@ -45,52 +45,42 @@ frame = 0
 fh = nil
 err = nil
 
-function fileclose()
-    dumpfile:close()
-    dumpfile = nil
-    print("dumping completed")
-end
-
-function dumper()
+while true do
     if dumpfile then
         if movie.mode() ~= "PLAY" and dumpfile then
-            fileclose()
+            dumpfile:close()
+            dumpfile = nil
+            print("dumping completed")
         elseif not emu.islagged() then
             local p1 = 0
             local p2 = 0
-            local input = movie.getinput(emu.framecount() - 1)
+            local input = movie.getinput(emu.framecount())
 
             pollcount = pollcount + 1
 
             -- copy input data to bit data
             for k, v in pairs(input) do
-                local plyr   = string.sub(k, 1, 2)
+                local player = string.sub(k, 1, 2)
                 local id     = string.sub(k, 4, string.len(k))
                 local mod    = joymap[id]
 
-                if v == true then
-                    -- print(k)
-                    if plyr == "P1" then p1 = bit.bor(p1, bit.lshift(1, mod)); end
-                    if plyr == "P2" then p2 = bit.bor(p2, bit.lshift(1, mod)); end
+                if input[k] == true then
+                    if player == "P1" then p1 = bit.bor(p1, bit.lshift(1, 7 - mod)); end
+                    if player == "P2" then p2 = bit.bor(p2, bit.lshift(1, 7 - mod)); end
                 end
             end
 
-            -- print(p1..","..p2) -- print out raw input data
-
             -- write bit data
-            dumpfile:write(string.char(bit.band(p1, 0xff), bit.band(p2, 0xff)))
+            dumpfile:write(string.char(
+                bit.band(p1, 0xff),
+                bit.band(p2, 0xff)
+            ));
 
             if pollcount % 1024 == 0 then
                 print("wrote "..tostring(pollcount).." frames")
             end
         end
     end
-end
 
-event.onframestart(dumper)
-event.onexit(fileclose)
-
-while true do
-    -- event-based
     emu.frameadvance()
 end
