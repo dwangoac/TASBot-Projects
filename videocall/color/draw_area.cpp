@@ -1,5 +1,5 @@
-#include "draw_area.h"
 #include "settings.h"
+#include "draw_area.h"
 #include <QDirIterator>
 #include <QPainter>
 #include <QDebug>
@@ -226,8 +226,7 @@ QMap<QString, QColor> colors = {
 	{"burgundy", 0x610023},
 	{"plum", 0x580f41},
 	{"gold", 0xdbb40c},
-	{"glod", 0xffdf00},
-	{"tasbot", 0x7a5b07},
+	{"glod", 0xe4cc68},
 	{"navy", 0x01153e},
 	{"aquamarine", 0x04d8b2},
 	{"rose", 0xcf6275},
@@ -236,7 +235,7 @@ QMap<QString, QColor> colors = {
 	{"lime", 0xaaff32},
 	{"periwinkle", 0x8e82fe},
 	{"peach", 0xffb07c},
-	{"black", 0x000000},
+	{"black", 0x000001},
 	{"lilac", 0xcea2fd},
 	{"beige", 0xe6daa6},
 	{"salmon", 0xff796c},
@@ -264,6 +263,7 @@ QMap<QString, QColor> colors = {
 
 draw_area::draw_area(QWidget *parent) : QWidget(parent)
 {
+#ifndef DISABLE_EMOTES
 	QDirIterator emo_it("../twitchemotes", QStringList() << "*.png", QDir::Files, QDirIterator::Subdirectories);
 	while (emo_it.hasNext()){
 		QString trigger = emo_it.fileName();
@@ -275,6 +275,7 @@ draw_area::draw_area(QWidget *parent) : QWidget(parent)
 		emotes.insert(trigger, new QPixmap(emo_it.filePath()));
 		emo_it.next();
 	}
+#endif
 
 	QDirIterator pic_it("../pictures", QStringList() << "*.png", QDir::Files, QDirIterator::Subdirectories);
 	while (pic_it.hasNext()){
@@ -333,7 +334,7 @@ void draw_area::register_color(QString color, unsigned int space)
 	else {
 		color_rgb = colors[color.toLower()];
 	}
-	if(!color_rgb.isValid() || !(color_rgb.rgb() & 0xFFFFFF)){
+	if(!color_rgb.isValid()){
 		return;
 	}
 	auto coords = picture_coords[current_picture][space % picture_coords[current_picture].size()];
@@ -344,6 +345,8 @@ void draw_area::register_color(QString color, unsigned int space)
 
 void draw_area::register_emote(QString emote, int x, int y)
 {
+	// if DISABLE_EMOTES is defined (in settings.h), there will be no emotes to match and
+	// we'll never be called
 	registered_emotes.append({emote, x, y});
 	update();
 	qDebug() << "registered emote" << emote << x << y;
@@ -358,7 +361,6 @@ void draw_area::paintEvent(QPaintEvent *event)
 	for(const auto &emote : registered_emotes){
 		painter.drawPixmap(emote.x, emote.y, *emotes[emote.name]);
 	}
-	
 }
 
 void draw_area::keyPressEvent(QKeyEvent *event)

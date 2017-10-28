@@ -31,6 +31,7 @@ class bot : public IrcConnection
 		QList<QString> colors;
 
 		unsigned int hash(const char *name);
+		void processColorCommand(QString color, const QStringRef& position);
 };
 
 #endif // BOT_H
