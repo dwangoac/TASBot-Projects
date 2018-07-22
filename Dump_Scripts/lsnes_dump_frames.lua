@@ -42,6 +42,18 @@ on_latch = function()
     polled = true
 end
 
+on_snoop = function(port, controller, index, value)
+    if port == 0 then
+        if controller == 0 then
+            if index == 1 then
+                if value == 1 then
+                    print("SNES Reset on frame: ", pollcount)
+                    end
+            end
+        end
+    end
+end
+
 on_frame_emulated = function()
     if dumpfile then
         if polled then
