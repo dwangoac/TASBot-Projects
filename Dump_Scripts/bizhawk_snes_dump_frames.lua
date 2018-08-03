@@ -18,6 +18,7 @@ joymap["L"]         = 10
 joymap["R"]         = 11
 joymap["et"]     = 99 -- Reset
 joymap["er"]     = 98 -- Power
+joymap["Toggle Multitap"] = 97
 
 
 file_suffix = "frame.r16m"
@@ -92,23 +93,23 @@ while true do
                     if bytenum == 1 then
                         if player == "P1" then p1 = bit.bor(p1, bit.lshift(1, 7 - mod)); end
                         if player == "P2" then p2 = bit.bor(p2, bit.lshift(1, 7 - mod)); end
-                        if player == "P3" then p2 = bit.bor(p3, bit.lshift(1, 7 - mod)); end
-                        if player == "P4" then p2 = bit.bor(p4, bit.lshift(1, 7 - mod)); end
-                        if player == "P5" then p2 = bit.bor(p5, bit.lshift(1, 7 - mod)); end
-                        if player == "P6" then p2 = bit.bor(p6, bit.lshift(1, 7 - mod)); end
-                        if player == "P7" then p2 = bit.bor(p7, bit.lshift(1, 7 - mod)); end
-                        if player == "P8" then p2 = bit.bor(p8, bit.lshift(1, 7 - mod)); end
+                        if player == "P3" then p3 = bit.bor(p3, bit.lshift(1, 7 - mod)); end
+                        if player == "P4" then p4 = bit.bor(p4, bit.lshift(1, 7 - mod)); end
+                        if player == "P5" then p5 = bit.bor(p5, bit.lshift(1, 7 - mod)); end
+                        if player == "P6" then p6 = bit.bor(p6, bit.lshift(1, 7 - mod)); end
+                        if player == "P7" then p7 = bit.bor(p7, bit.lshift(1, 7 - mod)); end
+                        if player == "P8" then p8 = bit.bor(p8, bit.lshift(1, 7 - mod)); end
                     end
                     if bytenum == 2 then
                         mod = mod - 8
                         if player == "P1" then p1a = bit.bor(p1a, bit.lshift(1, 7 - mod)); end
                         if player == "P2" then p2a = bit.bor(p2a, bit.lshift(1, 7 - mod)); end
-                        if player == "P3" then p2a = bit.bor(p3a, bit.lshift(1, 7 - mod)); end
-                        if player == "P4" then p2a = bit.bor(p4a, bit.lshift(1, 7 - mod)); end
-                        if player == "P5" then p2a = bit.bor(p5a, bit.lshift(1, 7 - mod)); end
-                        if player == "P6" then p2a = bit.bor(p6a, bit.lshift(1, 7 - mod)); end
-                        if player == "P7" then p2a = bit.bor(p7a, bit.lshift(1, 7 - mod)); end
-                        if player == "P8" then p2a = bit.bor(p8a, bit.lshift(1, 7 - mod)); end
+                        if player == "P3" then p3a = bit.bor(p3a, bit.lshift(1, 7 - mod)); end
+                        if player == "P4" then p4a = bit.bor(p4a, bit.lshift(1, 7 - mod)); end
+                        if player == "P5" then p5a = bit.bor(p5a, bit.lshift(1, 7 - mod)); end
+                        if player == "P6" then p6a = bit.bor(p6a, bit.lshift(1, 7 - mod)); end
+                        if player == "P7" then p7a = bit.bor(p7a, bit.lshift(1, 7 - mod)); end
+                        if player == "P8" then p8a = bit.bor(p8a, bit.lshift(1, 7 - mod)); end
                     end
                 end
             end
